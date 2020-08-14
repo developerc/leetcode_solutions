@@ -69,4 +69,6 @@ int main(){
 	}
 	*(strRevers + iRevers) = '\0';
 	printf("%s\n", strRevers);
+	
+	free(strRevers);
 }
