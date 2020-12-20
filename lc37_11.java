@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Solution11 {
-	int[][] constraintsTable = new int[729][324];			//таблица ограничений
-	List<String> headerRowList = new ArrayList<>();		//список заголовков строк
+	int[][] constraintsTable = new int[729][324];			//С‚Р°Р±Р»РёС†Р° РѕРіСЂР°РЅРёС‡РµРЅРёР№ constraint table
+	List<String> headerRowList = new ArrayList<>();		//СЃРїРёСЃРѕРє Р·Р°РіРѕР»РѕРІРєРѕРІ СЃС‚СЂРѕРє list of line headers
 	Node head; // head of list
-	List<Node> closedNodes = new ArrayList<>();	//список закрытых Нод
-	List<Node> firstCoverNodes = new ArrayList<>();	//список первоначально закрытых Нод, на первом уровне
+	List<Node> closedNodes = new ArrayList<>();	//СЃРїРёСЃРѕРє Р·Р°РєСЂС‹С‚С‹С… РќРѕРґ closed node list
+	List<Node> firstCoverNodes = new ArrayList<>();	//СЃРїРёСЃРѕРє РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅРѕ Р·Р°РєСЂС‹С‚С‹С… РќРѕРґ, РЅР° РїРµСЂРІРѕРј СѓСЂРѕРІРЅРµ list of initially closed Nodes, on the first level
 	List<Integer> numsCoveredStr = new ArrayList<>();
 	int coverCnt = 0;
 	
-	class Node {	//Узел для связного списка
+	class Node {	//Г“Г§ГҐГ« Г¤Г«Гї Г±ГўГїГ§Г­Г®ГЈГ® Г±ГЇГЁГ±ГЄГ 
 		String name;
         int data;
         Node next;
@@ -28,13 +28,13 @@ public class Solution11 {
 	private int makeConstraintsTable(char[][] board){
 		int rowNum = 0;
 		int colNum = 0;
-		//заполним таблицу нулями
+		//Г§Г ГЇГ®Г«Г­ГЁГ¬ ГІГ ГЎГ«ГЁГ¶Гі Г­ГіГ«ГїГ¬ГЁ
 		for(int i = 0; i < 729; i++){
 			for(int j = 0; j < 324; j++){
 				constraintsTable[i][j] = 0;
 			}
 		}
-		//заполняем ограничения в ячейках
+		//Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г®ГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГї Гў ГїГ·ГҐГ©ГЄГ Гµ
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
 				if(board[i][j] == '.'){
@@ -42,19 +42,19 @@ public class Solution11 {
 						colNum = i*9 + j;						
 						constraintsTable[rowNum][colNum] = 1;
 						rowNum++;
-						//добавим в список заголовков строк
+						//Г¤Г®ГЎГ ГўГЁГ¬ Гў Г±ГЇГЁГ±Г®ГЄ Г§Г ГЈГ®Г«Г®ГўГЄГ®Гў Г±ГІГ°Г®ГЄ
 						headerRowList.add("R" + i + "C" + j + "#" + k);
 					}
 				} else {
 					colNum = i*9 + j;						
 					constraintsTable[rowNum][colNum] = 1;
 					rowNum++;
-					//добавим в список заголовков строк
+					//Г¤Г®ГЎГ ГўГЁГ¬ Гў Г±ГЇГЁГ±Г®ГЄ Г§Г ГЈГ®Г«Г®ГўГЄГ®Гў Г±ГІГ°Г®ГЄ
 					headerRowList.add("R" + i + "C" + j + "#" + board[i][j]);
 				}
 			}
 		}
-		//заполняем ограничения в строках
+		//Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г®ГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГї Гў Г±ГІГ°Г®ГЄГ Гµ
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -71,7 +71,7 @@ public class Solution11 {
 				}
 			}
 		}
-		//заполняем ограничения в столбцах
+		//Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г®ГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГї Гў Г±ГІГ®Г«ГЎГ¶Г Гµ
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -88,27 +88,27 @@ public class Solution11 {
 				}
 			}
 		}	
-		//заполняем ограничения в боксах
+		//Г§Г ГЇГ®Г«Г­ГїГҐГ¬ Г®ГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГї Гў ГЎГ®ГЄГ±Г Гµ
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
 				if(board[i][j] == '.'){
 					for(int k = 0; k < 9; k++){
 						//colNum = 243 + k + ((i/3)*3 + j/3) * 9;
-						colNum = 243 + k*9 + ((i/3)*3 + j/3);	// 2 бокса в строке
+						colNum = 243 + k*9 + ((i/3)*3 + j/3);	// 2 ГЎГ®ГЄГ±Г  Гў Г±ГІГ°Г®ГЄГҐ
 						//System.out.println("Constr in box, colNum=" + colNum + ", rowNum=" + rowNum);
 						constraintsTable[rowNum][colNum] = 1;
 						rowNum++;
 					}
 				} else {
-					colNum = 243 + (board[i][j] - 48 - 1)*9 + ((i/3)*3 + j/3);	//243 отступ от начала + (число в ячейке - 1) * большее число (9)
-					constraintsTable[rowNum][colNum] = 1;					// + номер бокса (малый квадрат), отсчет с нуля 
+					colNum = 243 + (board[i][j] - 48 - 1)*9 + ((i/3)*3 + j/3);	//243 Г®ГІГ±ГІГіГЇ Г®ГІ Г­Г Г·Г Г«Г  + (Г·ГЁГ±Г«Г® Гў ГїГ·ГҐГ©ГЄГҐ - 1) * ГЎГ®Г«ГјГёГҐГҐ Г·ГЁГ±Г«Г® (9)
+					constraintsTable[rowNum][colNum] = 1;					// + Г­Г®Г¬ГҐГ° ГЎГ®ГЄГ±Г  (Г¬Г Г«Г»Г© ГЄГўГ Г¤Г°Г ГІ), Г®ГІГ±Г·ГҐГІ Г± Г­ГіГ«Гї 
 					rowNum++;
 				}
 			}
 		}
 		
-				//просмотрим таблицу ограничений
+				//ГЇГ°Г®Г±Г¬Г®ГІГ°ГЁГ¬ ГІГ ГЎГ«ГЁГ¶Гі Г®ГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГ©
 		for(int i = 0; i < 729; i++){
 			for(int j = 0; j < 324; j++){
 				System.out.print(constraintsTable[i][j] + ",");
@@ -132,17 +132,17 @@ public class Solution11 {
     	new_Node.up = node; 
     }
     
-    //добавляем ноду в таблицу
+    //Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Г­Г®Г¤Гі Гў ГІГ ГЎГ«ГЁГ¶Гі
     void addNodeToTable(int rowNum, int colNum, String name){
     	Node rowNode, colNode;
 		rowNode = head;
 		colNode = head;
-		//перемещаемся на левую и верхнюю краюнюю ноды
+		//ГЇГҐГ°ГҐГ¬ГҐГ№Г ГҐГ¬Г±Гї Г­Г  Г«ГҐГўГіГѕ ГЁ ГўГҐГ°ГµГ­ГѕГѕ ГЄГ°Г ГѕГ­ГѕГѕ Г­Г®Г¤Г»
 		for(int i = 0; i <= rowNum; i++){rowNode = rowNode.down;}
 		for(int i = 0; i <= colNum; i++){colNode = colNode.next;}
 		while(rowNode.next != null){rowNode = rowNode.next;}
 		while(colNode.down != null){colNode = colNode.down;}
-		//создаем ноду и связываем ее с левой и верхней
+		//Г±Г®Г§Г¤Г ГҐГ¬ Г­Г®Г¤Гі ГЁ Г±ГўГїГ§Г»ГўГ ГҐГ¬ ГҐГҐ Г± Г«ГҐГўГ®Г© ГЁ ГўГҐГ°ГµГ­ГҐГ©
 		Node new_Node = new Node(1, name);
 		rowNode.next = new_Node;
 		new_Node.prev = rowNode;
@@ -166,7 +166,7 @@ public class Solution11 {
         System.out.println();
     }
     
-  //накрываем ноду
+  //Г­Г ГЄГ°Г»ГўГ ГҐГ¬ Г­Г®Г¤Гі
     void coverNode(Node node){
     	node.up.down = node.down;
     	if(node.down != null){
@@ -174,7 +174,7 @@ public class Solution11 {
 		} 
     }
     
-    //раскрываем ноду
+    //Г°Г Г±ГЄГ°Г»ГўГ ГҐГ¬ Г­Г®Г¤Гі
     void uncoverNode(Node node){
     	node.up.down = node;
 		if(node.down != null){
@@ -182,14 +182,14 @@ public class Solution11 {
 		}
     }
     
-  //накрываем строку 
+  //Г­Г ГЄГ°Г»ГўГ ГҐГ¬ Г±ГІГ°Г®ГЄГі 
     void coverStr(int numStr){
     	Node nextNode = head;
     	for(int i = 0; i < numStr; i++){
     		nextNode = nextNode.down;
     	}
     	if(nextNode != null){
-    		System.out.println("Накрываю строку " + nextNode.name);
+    		System.out.println("ГЌГ ГЄГ°Г»ГўГ Гѕ Г±ГІГ°Г®ГЄГі " + nextNode.name);
     		nextNode = nextNode.next;
     		while(nextNode != null){    			
     			nextNode.up.down = nextNode.down;
@@ -204,14 +204,14 @@ public class Solution11 {
     	}
     }
     
-  //раскрываем строку
+  //Г°Г Г±ГЄГ°Г»ГўГ ГҐГ¬ Г±ГІГ°Г®ГЄГі
     void uncoverStr(int numStr){
     	Node nextNode = head;
     	for(int i = 0; i < numStr; i++){
     		nextNode = nextNode.down;
     	}
     	if(nextNode != null){
-    		System.out.println("Раскрываю строку " + nextNode.name);
+    		System.out.println("ГђГ Г±ГЄГ°Г»ГўГ Гѕ Г±ГІГ°Г®ГЄГі " + nextNode.name);
     		nextNode = nextNode.next;
     		while(nextNode != null){
     			nextNode.up.down = nextNode;
@@ -234,13 +234,13 @@ public class Solution11 {
     private void covStrInCol(Node tempNode) {
     	int numStrNode = 0;
     	System.out.println("Cover string in column. Handle node " + tempNode.name);
-    	while(tempNode.up != null){tempNode = tempNode.up;}	//поднимемся вверх
+    	while(tempNode.up != null){tempNode = tempNode.up;}	//ГЇГ®Г¤Г­ГЁГ¬ГҐГ¬Г±Гї ГўГўГҐГ°Гµ
     	while(tempNode.down != null){
     		tempNode = tempNode.down;
     		//numStrNode = Character.getNumericValue(tempNode.name.charAt(1)) + 1;
     		String[] parts = tempNode.name.split("_");
     		numStrNode = Integer.valueOf(parts[1]) + 1;
-    		System.out.println("Cover string № " + numStrNode);
+    		System.out.println("Cover string В№ " + numStrNode);
     		coverStr(numStrNode);
     		coverCnt++;
     	}
@@ -248,29 +248,29 @@ public class Solution11 {
     
     private boolean checkExactCover(){
     	int numStrNode = 0;
-    	int[] checkArr = new int[324];	//размер массива по количеству столбцов
+    	int[] checkArr = new int[324];	//Г°Г Г§Г¬ГҐГ° Г¬Г Г±Г±ГЁГўГ  ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ®Г«ГЎГ¶Г®Гў
     	Arrays.fill(checkArr, 0);
     	for(Node node : closedNodes){
     		//numStrNode = Character.getNumericValue(node.name.charAt(1));
     		String[] parts = node.name.split("_");
     		numStrNode = Integer.valueOf(parts[1]);
     		System.out.println("array string: " + numStrNode + ", " + headerRowList.get(numStrNode));
-    		for(int i = 0; i < 324; i++){	//размер по количеству столбцов
+    		for(int i = 0; i < 324; i++){	//Г°Г Г§Г¬ГҐГ° ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ®Г«ГЎГ¶Г®Гў
     			checkArr[i] = checkArr[i] + constraintsTable[numStrNode][i];
     		}
     	}
-    	for(int i = 0; i < 324; i++){	//размер по количеству столбцов
+    	for(int i = 0; i < 324; i++){	//Г°Г Г§Г¬ГҐГ° ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ®Г«ГЎГ¶Г®Гў
     		if(checkArr[i] != 1){return false;}
     	}
     	return true;
     }
     
-  //Ищем ноду с наименьшим количеством единиц
+  //Г€Г№ГҐГ¬ Г­Г®Г¤Гі Г± Г­Г ГЁГ¬ГҐГ­ГјГёГЁГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ®Г¬ ГҐГ¤ГЁГ­ГЁГ¶
     private Node getNodeMinOnes(){    	
     	Node tempNode = head.next;
     	Node minNode = tempNode;
     	Node counterNode;
-    	int cntOnes = 729;	//счетчик единиц по количеству строк
+    	int cntOnes = 729;	//Г±Г·ГҐГІГ·ГЁГЄ ГҐГ¤ГЁГ­ГЁГ¶ ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ°Г®ГЄ
     	int cntr;
     	while(tempNode != null){
     		counterNode = tempNode;
@@ -291,10 +291,10 @@ public class Solution11 {
     	return minNode;
     }
     
-    private boolean algorithmX(int level, int rowNum){	//level используем для определения уровня вложенности функции algorithmX
+    private boolean algorithmX(int level, int rowNum){	//level ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГ¬ Г¤Г«Гї Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГї ГіГ°Г®ГўГ­Гї ГўГ«Г®Г¦ГҐГ­Г­Г®Г±ГІГЁ ГґГіГ­ГЄГ¶ГЁГЁ algorithmX
 		Node minOnesNode;
     	Node tempNode = null;
-    	//ищем столбец с самым меньшим количеством единиц (или нод)
+    	//ГЁГ№ГҐГ¬ Г±ГІГ®Г«ГЎГҐГ¶ Г± Г±Г Г¬Г»Г¬ Г¬ГҐГ­ГјГёГЁГ¬ ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ®Г¬ ГҐГ¤ГЁГ­ГЁГ¶ (ГЁГ«ГЁ Г­Г®Г¤)
     	minOnesNode = getNodeMinOnes();
     	System.out.println("Node with least amount ones: " + minOnesNode.name); 
     	tempNode = minOnesNode.down;
@@ -308,11 +308,11 @@ public class Solution11 {
     	level++;
     	printClosedNodes();
     	if(minOnesNode.down != null){
-    		while(tempNode.prev != null){tempNode = tempNode.prev;}	//вернемся в начало
+    		while(tempNode.prev != null){tempNode = tempNode.prev;}	//ГўГҐГ°Г­ГҐГ¬Г±Гї Гў Г­Г Г·Г Г«Г®
     		
     		System.out.println("Close node: " + tempNode.name);
     		while(tempNode.next != null){
-    			//здесь будем проходить по строке и в каждом узле по столбцу и в каждом столбце закрываем строки 
+    			//Г§Г¤ГҐГ±Гј ГЎГіГ¤ГҐГ¬ ГЇГ°Г®ГµГ®Г¤ГЁГІГј ГЇГ® Г±ГІГ°Г®ГЄГҐ ГЁ Гў ГЄГ Г¦Г¤Г®Г¬ ГіГ§Г«ГҐ ГЇГ® Г±ГІГ®Г«ГЎГ¶Гі ГЁ Гў ГЄГ Г¦Г¤Г®Г¬ Г±ГІГ®Г«ГЎГ¶ГҐ Г§Г ГЄГ°Г»ГўГ ГҐГ¬ Г±ГІГ°Г®ГЄГЁ 
     			tempNode = tempNode.next;
     			covStrInCol(tempNode);
     		}
@@ -321,14 +321,14 @@ public class Solution11 {
     		return false;
     	}
     	System.out.println("coverCnt = " + coverCnt);
-    	if(coverCnt < rowNum){	 //5 изменить на число строк   		
+    	if(coverCnt < rowNum){	 //5 ГЁГ§Г¬ГҐГ­ГЁГІГј Г­Г  Г·ГЁГ±Г«Г® Г±ГІГ°Г®ГЄ   		
     		if(algorithmX(level, rowNum)){return true;}
-    	} else {	//будем проверять на точное покрытие
+    	} else {	//ГЎГіГ¤ГҐГ¬ ГЇГ°Г®ГўГҐГ°ГїГІГј Г­Г  ГІГ®Г·Г­Г®ГҐ ГЇГ®ГЄГ°Г»ГІГЁГҐ
     		if(checkExactCover()){
-    			System.out.println("Есть решение!");
+    			System.out.println("Г…Г±ГІГј Г°ГҐГёГҐГ­ГЁГҐ!");
     			return true;
     		} else {
-    			System.out.println("Нет точного покрытия!");
+    			System.out.println("ГЌГҐГІ ГІГ®Г·Г­Г®ГЈГ® ГЇГ®ГЄГ°Г»ГІГЁГї!");
     			return false;
     		}
     	}
@@ -351,35 +351,35 @@ public class Solution11 {
 		
 		rowNum = makeConstraintsTable(board);
 		
-		head = new Node(0, "head");	//создаем головной Node
+		head = new Node(0, "head");	//Г±Г®Г§Г¤Г ГҐГ¬ ГЈГ®Г«Г®ГўГ­Г®Г© Node
 		nextNode = head;
-		for(int i = 0; i < 324; i++){	// по количеству столбцов, создаем заголовочные Node для столбцов
+		for(int i = 0; i < 324; i++){	// ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ®Г«ГЎГ¶Г®Гў, Г±Г®Г§Г¤Г ГҐГ¬ Г§Г ГЈГ®Г«Г®ГўГ®Г·Г­Г»ГҐ Node Г¤Г«Гї Г±ГІГ®Г«ГЎГ¶Г®Гў
 			addFromRight(nextNode, i, "C_" + i);
 			nextNode = nextNode.next;
 		}
 		//printlistRow(head);
 		nextNode = head;
-		for(int i = 0; i < rowNum; i++){	//создаем заголовочные Node для строк
+		for(int i = 0; i < rowNum; i++){	//Г±Г®Г§Г¤Г ГҐГ¬ Г§Г ГЈГ®Г«Г®ГўГ®Г·Г­Г»ГҐ Node Г¤Г«Гї Г±ГІГ°Г®ГЄ
 			addFromBottom(nextNode, i, "R_" + i);
 			nextNode = nextNode.down;
 		}
 		//printlistCol(head);
-		//формируем Linked-List таблицу
+		//ГґГ®Г°Г¬ГЁГ°ГіГҐГ¬ Linked-List ГІГ ГЎГ«ГЁГ¶Гі
 		for(int i = 0; i < rowNum; i++){
-			for(int j = 0; j < 324; j++){	// по количеству столбцов
-				if(constraintsTable[i][j] > 0){	//если элемент таблицы равен 1 добавляем ноду
+			for(int j = 0; j < 324; j++){	// ГЇГ® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГі Г±ГІГ®Г«ГЎГ¶Г®Гў
+				if(constraintsTable[i][j] > 0){	//ГҐГ±Г«ГЁ ГЅГ«ГҐГ¬ГҐГ­ГІ ГІГ ГЎГ«ГЁГ¶Г» Г°Г ГўГҐГ­ 1 Г¤Г®ГЎГ ГўГ«ГїГҐГ¬ Г­Г®Г¤Гі
 					addNodeToTable(i, j, "T_"+i + "_" +j);
 				}
 			}
 		}
 		//printlistCol(head.next.next.next.next.next.next.next.next.next);
 		while(!algorithmX(0, rowNum)){
-			//будем закрывать первые ноды, использовавшиеся раньше
+			//ГЎГіГ¤ГҐГ¬ Г§Г ГЄГ°Г»ГўГ ГІГј ГЇГҐГ°ГўГ»ГҐ Г­Г®Г¤Г», ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ ГўГёГЁГҐГ±Гї Г°Г Г­ГјГёГҐ
 			System.out.print("numsCoveredStr.size() = ");
 			for(int i = 0; i < numsCoveredStr.size(); i++){System.out.print(numsCoveredStr.get(i) + ", ");}
 			System.out.println();
 			System.out.println("numsCoveredStr.size() = " + numsCoveredStr.size());
-			if(numsCoveredStr.size() > 0){	//Раскрываем закрытые строки и очищаем список закрытых строк
+			if(numsCoveredStr.size() > 0){	//ГђГ Г±ГЄГ°Г»ГўГ ГҐГ¬ Г§Г ГЄГ°Г»ГІГ»ГҐ Г±ГІГ°Г®ГЄГЁ ГЁ Г®Г·ГЁГ№Г ГҐГ¬ Г±ГЇГЁГ±Г®ГЄ Г§Г ГЄГ°Г»ГІГ»Гµ Г±ГІГ°Г®ГЄ
 				
 				for(int i = numsCoveredStr.size() - 1; i >= 0; i--){
 					uncoverStr(numsCoveredStr.get(i));
