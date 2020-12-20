@@ -12,7 +12,7 @@ public class Solution11 {
 	List<Integer> numsCoveredStr = new ArrayList<>();
 	int coverCnt = 0;
 	
-	class Node {	//Óçåë äëÿ ñâÿçíîãî ñïèñêà
+	class Node {	//Узел для связного списка  Node for a linked list
 		String name;
         int data;
         Node next;
@@ -28,13 +28,13 @@ public class Solution11 {
 	private int makeConstraintsTable(char[][] board){
 		int rowNum = 0;
 		int colNum = 0;
-		//çàïîëíèì òàáëèöó íóëÿìè
+		//заполним таблицу нулями  fill the table with zeros
 		for(int i = 0; i < 729; i++){
 			for(int j = 0; j < 324; j++){
 				constraintsTable[i][j] = 0;
 			}
 		}
-		//çàïîëíÿåì îãðàíè÷åíèÿ â ÿ÷åéêàõ
+		//заполняем ограничения в ячейках  fill in the restrictions in the cells
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
 				if(board[i][j] == '.'){
@@ -42,19 +42,19 @@ public class Solution11 {
 						colNum = i*9 + j;						
 						constraintsTable[rowNum][colNum] = 1;
 						rowNum++;
-						//äîáàâèì â ñïèñîê çàãîëîâêîâ ñòðîê
+						//добавим в список заголовков строк  add to the list of line headers
 						headerRowList.add("R" + i + "C" + j + "#" + k);
 					}
 				} else {
 					colNum = i*9 + j;						
 					constraintsTable[rowNum][colNum] = 1;
 					rowNum++;
-					//äîáàâèì â ñïèñîê çàãîëîâêîâ ñòðîê
+					//добавим в список заголовков строк  add to the list of line headers
 					headerRowList.add("R" + i + "C" + j + "#" + board[i][j]);
 				}
 			}
 		}
-		//çàïîëíÿåì îãðàíè÷åíèÿ â ñòðîêàõ
+		//заполняем ограничения в строках  fill in the line restrictions
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -71,7 +71,7 @@ public class Solution11 {
 				}
 			}
 		}
-		//çàïîëíÿåì îãðàíè÷åíèÿ â ñòîëáöàõ
+		//заполняем ограничения в столбцах  fill in the constraints in the columns
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -88,27 +88,27 @@ public class Solution11 {
 				}
 			}
 		}	
-		//çàïîëíÿåì îãðàíè÷åíèÿ â áîêñàõ
+		//заполняем ограничения в боксах  fill in the restrictions in the boxes
 		rowNum = 0;
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
 				if(board[i][j] == '.'){
 					for(int k = 0; k < 9; k++){
 						//colNum = 243 + k + ((i/3)*3 + j/3) * 9;
-						colNum = 243 + k*9 + ((i/3)*3 + j/3);	// 2 áîêñà â ñòðîêå
+						colNum = 243 + k*9 + ((i/3)*3 + j/3);	// 3 бокса в строке
 						//System.out.println("Constr in box, colNum=" + colNum + ", rowNum=" + rowNum);
 						constraintsTable[rowNum][colNum] = 1;
 						rowNum++;
 					}
 				} else {
-					colNum = 243 + (board[i][j] - 48 - 1)*9 + ((i/3)*3 + j/3);	//243 îòñòóï îò íà÷àëà + (÷èñëî â ÿ÷åéêå - 1) * áîëüøåå ÷èñëî (9)
-					constraintsTable[rowNum][colNum] = 1;					// + íîìåð áîêñà (ìàëûé êâàäðàò), îòñ÷åò ñ íóëÿ 
+					colNum = 243 + (board[i][j] - 48 - 1)*9 + ((i/3)*3 + j/3);	//243 отступ от начала + (число в ячейке - 1) * большее число (9)  243 indent from the beginning + (number in the cell - 1) * larger number (9)
+					constraintsTable[rowNum][colNum] = 1;					//  + номер бокса (малый квадрат), отсчет с нуля + box number (small square), counting from zero
 					rowNum++;
 				}
 			}
 		}
 		
-				//ïðîñìîòðèì òàáëèöó îãðàíè÷åíèé
+				//просмотрим таблицу ограничений
 		for(int i = 0; i < 729; i++){
 			for(int j = 0; j < 324; j++){
 				System.out.print(constraintsTable[i][j] + ",");
@@ -118,31 +118,31 @@ public class Solution11 {
 		return rowNum;
 	}
 	
-	//Adding a node from right 
+	//Добавление узла справа  Adding a node from right 
     void addFromRight(Node node, int new_data, String name){
     	Node new_Node = new Node(new_data, name);
     	node.next = new_Node;
     	new_Node.prev = node;    	
     }
     
-  //Adding a node from bottom
+  //Добавление узла снизу  Adding a node from bottom
     void addFromBottom(Node node, int new_data, String name){
     	Node new_Node = new Node(new_data, name);
     	node.down = new_Node;
     	new_Node.up = node; 
     }
     
-    //äîáàâëÿåì íîäó â òàáëèöó
+    //добавляем ноду в таблицу add a node to the table
     void addNodeToTable(int rowNum, int colNum, String name){
     	Node rowNode, colNode;
 		rowNode = head;
 		colNode = head;
-		//ïåðåìåùàåìñÿ íà ëåâóþ è âåðõíþþ êðàþíþþ íîäû
+		//перемещаемся на левую и верхнюю краюнюю ноды  move to the left and top edge nodes
 		for(int i = 0; i <= rowNum; i++){rowNode = rowNode.down;}
 		for(int i = 0; i <= colNum; i++){colNode = colNode.next;}
 		while(rowNode.next != null){rowNode = rowNode.next;}
 		while(colNode.down != null){colNode = colNode.down;}
-		//ñîçäàåì íîäó è ñâÿçûâàåì åå ñ ëåâîé è âåðõíåé
+		//создаем ноду и связываем ее с левой и верхней  create a node and link it to the left and top
 		Node new_Node = new Node(1, name);
 		rowNode.next = new_Node;
 		new_Node.prev = rowNode;
@@ -166,7 +166,7 @@ public class Solution11 {
         System.out.println();
     }
     
-  //íàêðûâàåì íîäó
+  //накрываем ноду  cover the node
     void coverNode(Node node){
     	node.up.down = node.down;
     	if(node.down != null){
@@ -174,7 +174,7 @@ public class Solution11 {
 		} 
     }
     
-    //ðàñêðûâàåì íîäó
+    //раскрываем ноду  open the node
     void uncoverNode(Node node){
     	node.up.down = node;
 		if(node.down != null){
@@ -182,14 +182,14 @@ public class Solution11 {
 		}
     }
     
-  //íàêðûâàåì ñòðîêó 
+  //накрываем строку   cover the line
     void coverStr(int numStr){
     	Node nextNode = head;
     	for(int i = 0; i < numStr; i++){
     		nextNode = nextNode.down;
     	}
     	if(nextNode != null){
-    		System.out.println("Íàêðûâàþ ñòðîêó " + nextNode.name);
+    		System.out.println("Накрываю строку " + nextNode.name);
     		nextNode = nextNode.next;
     		while(nextNode != null){    			
     			nextNode.up.down = nextNode.down;
@@ -204,14 +204,14 @@ public class Solution11 {
     	}
     }
     
-  //ðàñêðûâàåì ñòðîêó
+  //раскрываем строку
     void uncoverStr(int numStr){
     	Node nextNode = head;
     	for(int i = 0; i < numStr; i++){
     		nextNode = nextNode.down;
     	}
     	if(nextNode != null){
-    		System.out.println("Ðàñêðûâàþ ñòðîêó " + nextNode.name);
+    		System.out.println("раскрываю строку " + nextNode.name);
     		nextNode = nextNode.next;
     		while(nextNode != null){
     			nextNode.up.down = nextNode;
@@ -234,7 +234,7 @@ public class Solution11 {
     private void covStrInCol(Node tempNode) {
     	int numStrNode = 0;
     	System.out.println("Cover string in column. Handle node " + tempNode.name);
-    	while(tempNode.up != null){tempNode = tempNode.up;}	//ïîäíèìåìñÿ ââåðõ
+    	while(tempNode.up != null){tempNode = tempNode.up;}	//поднимемся вверх
     	while(tempNode.down != null){
     		tempNode = tempNode.down;
     		//numStrNode = Character.getNumericValue(tempNode.name.charAt(1)) + 1;
@@ -248,29 +248,29 @@ public class Solution11 {
     
     private boolean checkExactCover(){
     	int numStrNode = 0;
-    	int[] checkArr = new int[324];	//ðàçìåð ìàññèâà ïî êîëè÷åñòâó ñòîëáöîâ
+    	int[] checkArr = new int[324];	//размер массива по количеству столбцов  array size by number of columns
     	Arrays.fill(checkArr, 0);
     	for(Node node : closedNodes){
     		//numStrNode = Character.getNumericValue(node.name.charAt(1));
     		String[] parts = node.name.split("_");
     		numStrNode = Integer.valueOf(parts[1]);
     		System.out.println("array string: " + numStrNode + ", " + headerRowList.get(numStrNode));
-    		for(int i = 0; i < 324; i++){	//ðàçìåð ïî êîëè÷åñòâó ñòîëáöîâ
+    		for(int i = 0; i < 324; i++){	//размер по количеству столбцов  size by number of columns
     			checkArr[i] = checkArr[i] + constraintsTable[numStrNode][i];
     		}
     	}
-    	for(int i = 0; i < 324; i++){	//ðàçìåð ïî êîëè÷åñòâó ñòîëáöîâ
+    	for(int i = 0; i < 324; i++){	//размер по количеству столбцов  size by number of columns
     		if(checkArr[i] != 1){return false;}
     	}
     	return true;
     }
     
-  //Èùåì íîäó ñ íàèìåíüøèì êîëè÷åñòâîì åäèíèö
+  //Ищем ноду с наименьшим количеством единиц  Looking for the node with the least number of units
     private Node getNodeMinOnes(){    	
     	Node tempNode = head.next;
     	Node minNode = tempNode;
     	Node counterNode;
-    	int cntOnes = 729;	//ñ÷åò÷èê åäèíèö ïî êîëè÷åñòâó ñòðîê
+    	int cntOnes = 729;	//счетчик единиц по количеству строк  unit counter by number of lines
     	int cntr;
     	while(tempNode != null){
     		counterNode = tempNode;
@@ -291,10 +291,10 @@ public class Solution11 {
     	return minNode;
     }
     
-    private boolean algorithmX(int level, int rowNum){	//level èñïîëüçóåì äëÿ îïðåäåëåíèÿ óðîâíÿ âëîæåííîñòè ôóíêöèè algorithmX
+    private boolean algorithmX(int level, int rowNum){	//level используем для определения уровня вложенности функции algorithmX  level is used to determine the nesting level of the algorithmX function
 		Node minOnesNode;
     	Node tempNode = null;
-    	//èùåì ñòîëáåö ñ ñàìûì ìåíüøèì êîëè÷åñòâîì åäèíèö (èëè íîä)
+    	//ищем столбец с самым меньшим количеством единиц (или нод)  looking for a column with the least number of units (or nodes)
     	minOnesNode = getNodeMinOnes();
     	System.out.println("Node with least amount ones: " + minOnesNode.name); 
     	tempNode = minOnesNode.down;
@@ -308,11 +308,11 @@ public class Solution11 {
     	level++;
     	printClosedNodes();
     	if(minOnesNode.down != null){
-    		while(tempNode.prev != null){tempNode = tempNode.prev;}	//âåðíåìñÿ â íà÷àëî
+    		while(tempNode.prev != null){tempNode = tempNode.prev;}	//вернемся в начало  back to the beginning
     		
     		System.out.println("Close node: " + tempNode.name);
     		while(tempNode.next != null){
-    			//çäåñü áóäåì ïðîõîäèòü ïî ñòðîêå è â êàæäîì óçëå ïî ñòîëáöó è â êàæäîì ñòîëáöå çàêðûâàåì ñòðîêè 
+    			//здесь будем проходить по строке и в каждом узле по столбцу и в каждом столбце закрываем строки here we will go through the row and in each node along the column and close the rows in each column
     			tempNode = tempNode.next;
     			covStrInCol(tempNode);
     		}
@@ -321,14 +321,14 @@ public class Solution11 {
     		return false;
     	}
     	System.out.println("coverCnt = " + coverCnt);
-    	if(coverCnt < rowNum){	 //5 èçìåíèòü íà ÷èñëî ñòðîê   		
+    	if(coverCnt < rowNum){	   		
     		if(algorithmX(level, rowNum)){return true;}
-    	} else {	//áóäåì ïðîâåðÿòü íà òî÷íîå ïîêðûòèå
+    	} else {	//будем проверять на точное покрытие  we will check for exact coverage
     		if(checkExactCover()){
-    			System.out.println("Åñòü ðåøåíèå!");
+    			System.out.println("Есть решение!");
     			return true;
     		} else {
-    			System.out.println("Íåò òî÷íîãî ïîêðûòèÿ!");
+    			System.out.println("Нет точного покрытия!");
     			return false;
     		}
     	}
@@ -351,35 +351,35 @@ public class Solution11 {
 		
 		rowNum = makeConstraintsTable(board);
 		
-		head = new Node(0, "head");	//ñîçäàåì ãîëîâíîé Node
+		head = new Node(0, "head");	//создаем головной Node  create a head Node
 		nextNode = head;
-		for(int i = 0; i < 324; i++){	// ïî êîëè÷åñòâó ñòîëáöîâ, ñîçäàåì çàãîëîâî÷íûå Node äëÿ ñòîëáöîâ
+		for(int i = 0; i < 324; i++){	// по количеству столбцов, создаем заголовочные Node для столбцов  by the number of columns, create header Nodes for the columns
 			addFromRight(nextNode, i, "C_" + i);
 			nextNode = nextNode.next;
 		}
 		//printlistRow(head);
 		nextNode = head;
-		for(int i = 0; i < rowNum; i++){	//ñîçäàåì çàãîëîâî÷íûå Node äëÿ ñòðîê
+		for(int i = 0; i < rowNum; i++){	//создаем заголовочные Node для строк  create header Nodes for strings
 			addFromBottom(nextNode, i, "R_" + i);
 			nextNode = nextNode.down;
 		}
 		//printlistCol(head);
-		//ôîðìèðóåì Linked-List òàáëèöó
+		//формируем Linked-List таблицу  form a Linked-List table
 		for(int i = 0; i < rowNum; i++){
-			for(int j = 0; j < 324; j++){	// ïî êîëè÷åñòâó ñòîëáöîâ
-				if(constraintsTable[i][j] > 0){	//åñëè ýëåìåíò òàáëèöû ðàâåí 1 äîáàâëÿåì íîäó
+			for(int j = 0; j < 324; j++){	// по количеству столбцов  by the number of columns
+				if(constraintsTable[i][j] > 0){	//если элемент таблицы равен 1 добавляем ноду  if the table element is 1, add a node
 					addNodeToTable(i, j, "T_"+i + "_" +j);
 				}
 			}
 		}
 		//printlistCol(head.next.next.next.next.next.next.next.next.next);
 		while(!algorithmX(0, rowNum)){
-			//áóäåì çàêðûâàòü ïåðâûå íîäû, èñïîëüçîâàâøèåñÿ ðàíüøå
+			//будем закрывать первые ноды, использовавшиеся раньше  we will close the first nodes that were used before
 			System.out.print("numsCoveredStr.size() = ");
 			for(int i = 0; i < numsCoveredStr.size(); i++){System.out.print(numsCoveredStr.get(i) + ", ");}
 			System.out.println();
 			System.out.println("numsCoveredStr.size() = " + numsCoveredStr.size());
-			if(numsCoveredStr.size() > 0){	//Ðàñêðûâàåì çàêðûòûå ñòðîêè è î÷èùàåì ñïèñîê çàêðûòûõ ñòðîê
+			if(numsCoveredStr.size() > 0){	//Раскрываем закрытые строки и очищаем список закрытых строк  Expand closed lines and clear the list of closed lines
 				
 				for(int i = numsCoveredStr.size() - 1; i >= 0; i--){
 					uncoverStr(numsCoveredStr.get(i));
